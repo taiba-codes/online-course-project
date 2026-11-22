@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <title>Exam Result</title>
+    <link rel='stylesheet' href='https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css'>
+</head>
+<body>
+    <div class='container mt-5'>
+        <div class='card shadow p-4'>
+            <h2 class='text-success mb-3'>Congratulations! Exam Result</h2>
+            <hr>
+            <h4>Course: {{ course.name }}</h4>
+            <p class='lead mt-3'>Your Score: <strong>{{ grade }}</strong> out of <strong>{{ total_score }}</strong></p>
+            <div class='alert alert-success' role='alert'>
+                Great job! You answered all questions correctly.
+            </div>
+            <a href='{% url 'onlinecourse:course_details' course.id %}' class='btn btn-primary mt-3'>Back to Course</a>
+        </div>
+    </div>
+</body>
+</html>
