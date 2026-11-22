@@ -2,28 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Course Details</title>
-    <!-- Bootstrap CSS CDN -->
+    <title>{{ course.name }}</title>
+    <!-- Bootstrap CDN Link -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
 </head>
 <body>
+    <!-- Navbar / Header -->
+    <nav class="navbar navbar-light bg-light">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1">Online Course App</span>
+        </div>
+    </nav>
+
+    <!-- Main Container with Bootstrap Styling -->
     <div class="container mt-5">
-        <h2 class="text-center mb-4">{{ course.name }}</h2>
-        <p class="lead text-center">{{ course.description }}</p>
+        <div class="jumbotron">
+            <h1 class="display-4">{{ course.name }}</h1>
+            <p class="lead">{{ course.description }}</p>
+        </div>
+
+        <hr class="my-4">
+
+        <h2 class="mb-4">Lessons</h2>
         
-        <hr>
-        
-        <h3 class="mb-3">Lessons</h3>
+        <!-- Lessons List using Bootstrap List Group and Cards -->
         <div class="list-group">
             {% for lesson in course.lesson_set.all %}
-                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2 shadow-sm">
                     <div class="d-flex w-100 justify-content-between">
-                        <h5 class="mb-1">{{ lesson.title }}</h5>
+                        <h5 class="mb-1 text-primary">{{ lesson.title }}</h5>
                     </div>
-                    <p class="mb-1">{{ lesson.content }}</p>
                 </div>
             {% empty %}
-                <p>No lessons available for this course yet.</p>
+                <p class="text-muted">No lessons available for this course yet.</p>
             {% endfor %}
         </div>
     </div>
