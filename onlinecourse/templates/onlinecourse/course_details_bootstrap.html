@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Course Details</title>
+    <!-- Bootstrap CSS CDN -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">{{ course.name }}</h2>
+        <p class="lead text-center">{{ course.description }}</p>
+        
+        <hr>
+        
+        <h3 class="mb-3">Lessons</h3>
+        <div class="list-group">
+            {% for lesson in course.lesson_set.all %}
+                <div class="list-group-item list-group-item-action flex-column align-items-start mb-2">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ lesson.title }}</h5>
+                    </div>
+                    <p class="mb-1">{{ lesson.content }}</p>
+                </div>
+            {% empty %}
+                <p>No lessons available for this course yet.</p>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
