@@ -1,44 +1,81 @@
 from django.db import models
-from django.utils.timezone import now
+from django.conf import settings
 
-# Course aur Lesson models (agar pehle se nahi hain toh yahan define hain)
 class Course(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField()
+    name = models.CharField(max_length=30, null=False, default='online course')
+    description = models.CharField(max_length=1000)
 
     def __str__(self):
         return self.name
 
 class Lesson(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=200, default="lesson")
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.title
 
+class Instructor(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    full_time = models.BooleanField(default=True)
+    total_courses = models.IntegerField(default=0)
+
+    def __str__(self):
+        return self.user.username
+
+class Learner(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+    STUDENT = 'student'
+    DEVELOPER = 'developer'
+    DATA_SCIENTIST = 'data_scientist'
+    DATABASE_ADMIN = 'db_admin'
+    OCCUPATION_CHOICES = [
+        (STUDENT, 'Student'),
+        (DEVELOPER, 'Developer'),
+        (DATA_SCIENTIST, 'Data Scientist'),
+        (DATABASE_ADMIN, 'Database Admin')
+    ]
+    occupation = models.CharField(
+        max_length=20,
+        choices=OCCUPATION_CHOICES,
+        default=STUDENT,
+    )
+    social_link = models.URLField(max_length=200)
+
+    def __str__(self):
+        return self.user.username
+
 class Enrollment(models.Model):
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    AUDIT = 'audit'
+    HONOR = 'honor'
+    BETA = 'BETA'
+    COURSE_MODE_CHOICES = [
+        (AUDIT, 'Audit'),
+        (HONOR, 'Honor'),
+        (BETA, 'Beta')
+    ]
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    date_enrolled = models.DateField(default=now)
-
-
-# --- Task 1 Models ---
+    date_enrolled = models.DateField(auto_now=True)
+    mode = models.CharField(
+        max_length=5,
+        choices=COURSE_MODE_CHOICES,
+        default=AUDIT
+    )
 
 class Question(models.Model):
     lesson = models.ForeignKey(Lesson, on_delete=models.CASCADE)
     question_text = models.CharField(max_length=200)
-    grade = models.IntegerField(default=50)
+    grade = models.IntegerField(default=5)
 
     def __str__(self):
-        return f"Question: {self.question_text}"
-
-    def is_get_score(self, selected_ids):
-        all_choices = self.choice_set.filter(is_correct=True)
-        selected_choices = self.choice_set.filter(id__in=selected_ids, is_correct=True)
-        if all_choices.count() == selected_choices.count():
-            return True
-        return False
-
+        return self.question_text
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
@@ -46,11 +83,11 @@ class Choice(models.Model):
     is_correct = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"Choice: {self.choice_text} (Correct: {self.is_correct})"
-
+        return self.choice_text
 
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
 
-# Create your models here.
+    def __str__(self):
+        return f"Submission ID: {self.id}"
